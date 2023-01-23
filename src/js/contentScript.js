@@ -165,6 +165,7 @@ function findTargetsAt(x, y) {
   }
 
   var sortedTargets = [].concat(videos).concat(images).concat(others)
+  console.log(sortedTargets);
   return sortedTargets;
 }
 
