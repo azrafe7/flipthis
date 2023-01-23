@@ -1,3 +1,5 @@
+'use strict';
+
 var uid = getUniqueId();  // every content script gets a unique id (to work with pages with multiple iframes)
 
 var settings = {};
@@ -8,6 +10,9 @@ var enabled = true;
 
 // array of highlighted elements
 var highlighted = [];
+
+// x, y of mouse pointer
+var clientPos = {};
 
 function getUniqueId() {
   function id4() {
@@ -142,13 +147,37 @@ function flashAnimate(target) {
   setTimeout(function() { tgt.removeClass("flipthis-highlight"); }, 100);
 }*/
 
+
+function findTargetsAt(x, y) {
+  var elementsAtPoint = document.elementsFromPoint(x, y);
+  var videos = [];
+  var images = [];
+  var others = [];
+  for (const el of elementsAtPoint) {
+    const tag = el.tagName.toUpperCase();
+    if (tag === 'VIDEO') {
+      videos.push(el);
+    } else if (tag === 'IMG' || tag === 'SVG' || tag === 'CANVAS') {
+      images.push(el);
+    } else {
+      others.push(el);
+    }
+  }
+
+  var sortedTargets = [].concat(videos).concat(images).concat(others)
+  return sortedTargets;
+}
+
+
 // send target to background
 function sendTarget(target) {
   var validTarget = (target.tagName != "BODY" && target.tagName != "HTML" && target.tagName != "HEAD");
 
+  //console.log(findTargetsAt(clientPos.x, clientPos.y));
+
   if (target != currTarget) {
-    targetFlipState = getFlipState(target);
-    console.log(["Sending target flipState:", targetFlipState, target.tagName]);
+    var targetFlipState = getFlipState(target);
+    console.log(["Sending target flipState:", targetFlipState, target.tagName, target]);
     currTarget = target;
     chrome.extension.sendRequest({
       command:"contextMenu",
@@ -175,10 +204,20 @@ function highlight(target) {
 
 // send curr target and highlight
 function onMouseDown(event) {
+  clientPos = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
   //console.log([event.which, event.target]);
   if (enabled && event.which == 3 && settings.contextMenu) {    // right click
-    sendTarget(event.target);
-    if (settings.blink) highlight(event.target);
+    var target = event.target;
+    var targets = findTargetsAt(clientPos.x, clientPos.y);
+    if (targets) {
+      target = targets[0];
+    }
+    sendTarget(target);
+    if (settings.blink) highlight(target);
   }
 }
 
@@ -191,10 +230,20 @@ function onMouseUp(event) {
 
 // send curr target and highlight
 function onMouseMove(event) {
+  clientPos = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
   //console.log(["m", highlighted.length]);
   if (enabled && event.which == 3 && settings.blink && settings.contextMenu) {    // highlight target while holding right-click
-    sendTarget(event.target);
-    if (settings.blink) highlight(event.target);
+    var target = event.target;
+    var targets = findTargetsAt(clientPos.x, clientPos.y);
+    if (targets) {
+      target = targets[0];
+    }
+    sendTarget(target);
+    if (settings.blink) highlight(target);
   }
 }
 

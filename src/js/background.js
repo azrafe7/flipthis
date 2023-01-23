@@ -1,3 +1,4 @@
+'use strict';
 
 // coded by azrafe7
 
@@ -31,7 +32,7 @@ init();
 
 function isEmpty(obj) {
   if (obj) {
-    for (p in obj) {
+    for (let p in obj) {
       return false;
     }
   }
@@ -136,7 +137,7 @@ function init() {
   // load settings from local storage
   if (!isEmpty(localStorage.settings)) {
     settings = JSON.parse(localStorage.settings);
-    for (prop in defaults) {
+    for (let prop in defaults) {
       if (settings[prop] == undefined) {  // load default when not defined
         settings[prop] = defaults[prop];
       }
