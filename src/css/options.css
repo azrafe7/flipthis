@@ -1,0 +1,74 @@
+body {
+	font-family: 'Segoe UI', Verdana, Arial, sans-serif;
+	font-size: .9em;
+	color: white;
+	background: #111 url(../icons/icon-128-alpha.png) no-repeat fixed 98% 98%;
+	margin: 10px 10px;
+}
+
+#title {
+	font-weight: bold;
+	border-radius: 8px;
+	border: 1px solid #ab6d15;
+	background-color: #333;
+	padding: 1px 6px;
+	margin-bottom: 10px;
+}
+
+.option {
+	float: left;
+	clear: both;
+	margin-top: 3px;
+}
+
+#buttons {
+	clear: both;
+	margin-left:10px;
+	margin-top: 10px;
+}
+
+#options {
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+select {
+	float: left;
+	height: 18px;
+}
+
+label {
+	margin-left: 3px;
+	margin-right: 5px;
+	float: left;
+}
+
+input {
+	float: left;
+}
+
+#patternLabel {
+	margin-top: 10px;
+}
+
+input[type=text] {
+	margin-top: 3px;
+	clear: left;
+	height: 16px;
+	width: 150px;
+}
+
+#helpIcon {
+	float: left;
+	font-size: .75em;
+	font-weight: bold;
+	margin-left: 6px;
+	cursor: pointer;
+	display: none;
+}
+
+#patternHelp {
+	margin-top: 6px;
+	font-size: .8em;
+	display: none;
+}

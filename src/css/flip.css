@@ -1,0 +1,20 @@
+/*
+body {
+	display: none;
+}*/
+
+.flipthis-invisible {
+	display: none;
+}
+
+.flipthis-highlight {
+	outline: 2px dotted #42f;
+}
+
+.flipthis-animate {
+	-webkit-transition: -webkit-transform .8s ease-in-out;
+}
+
+.flipthis-wrapper {
+  display: inline-block;
+}
