@@ -76,7 +76,7 @@ function contextMenuOnClick(info, tab) {
 function setFlippedIcon(currFlipState, newFlipState, id) {
   console.log(["Setting icon with flipState:", currFlipState, newFlipState, id]);
   if (currFlipState) {
-    var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d", { willReadFrequently: true });
 
     ctx.drawImage(iconBtn, 0,0);  // icon button
 
@@ -128,7 +128,8 @@ function init() {
   defaults.rotate = 180;
   defaults.animate = true;
   defaults.contextMenu = true;
-  defaults.blink = true;
+  defaults.blink = false;
+  defaults.prioritizeMedia = false;
   defaults.urlPattern = "";
 
   // save default settings to local storage

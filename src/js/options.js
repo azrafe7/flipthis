@@ -19,24 +19,26 @@ SettingsHelper.prototype = {
   },
 
   getFromPage: function() {
-    settings.autoFlip = $("#autoFlip").attr("checked");
-    settings.flipX = $("#flipX").attr("checked");
-    settings.flipY = $("#flipY").attr("checked");
+    settings.autoFlip = $("#autoFlip").prop("checked");
+    settings.flipX = $("#flipX").prop("checked");
+    settings.flipY = $("#flipY").prop("checked");
     settings.rotate = $("#rotate").val();
-    settings.animate = $("#animate").attr("checked");
-    settings.contextMenu = $("#contextMenu").attr("checked");
-    settings.blink = $("#blink").attr("checked");
+    settings.animate = $("#animate").prop("checked");
+    settings.contextMenu = $("#contextMenu").prop("checked");
+    settings.blink = $("#blink").prop("checked");
+    settings.prioritizeMedia = $("#prioritizeMedia").prop("checked");
     settings.urlPattern = $("#urlPattern").val();
   },
 
   saveToPage: function() {
-    $("#autoFlip").attr("checked", settings.autoFlip);
-    $("#flipX").attr("checked", settings.flipX);
-    $("#flipY").attr("checked", settings.flipY);
+    $("#autoFlip").prop("checked", settings.autoFlip);
+    $("#flipX").prop("checked", settings.flipX);
+    $("#flipY").prop("checked", settings.flipY);
     $("#rotate").val(settings.rotate);
-    $("#animate").attr("checked", settings.animate);
-    $("#contextMenu").attr("checked", settings.contextMenu);
-    $("#blink").attr("checked", settings.blink);
+    $("#animate").prop("checked", settings.animate);
+    $("#contextMenu").prop("checked", settings.contextMenu);
+    $("#blink").prop("checked", settings.blink);
+    $("#prioritizeMedia").prop("checked", settings.prioritizeMedia);
     $("#urlPattern").val(settings.urlPattern);
   },
 

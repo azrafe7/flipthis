@@ -165,7 +165,7 @@ function findTargetsAt(x, y) {
   }
 
   var sortedTargets = [].concat(videos).concat(images).concat(others)
-  console.log(sortedTargets);
+  //console.log(sortedTargets);
   return sortedTargets;
 }
 
@@ -176,7 +176,8 @@ function sendTarget(target) {
 
   //console.log(findTargetsAt(clientPos.x, clientPos.y));
 
-  if (target != currTarget) {
+  console.log([target, currTarget, target == currTarget]);
+  //if (target != currTarget) {
     var targetFlipState = getFlipState(target);
     console.log(["Sending target flipState:", targetFlipState, target.tagName, target]);
     currTarget = target;
@@ -187,7 +188,7 @@ function sendTarget(target) {
       flipState: JSON.stringify(targetFlipState),
       uid: uid
     });
-  }
+  //}
 }
 
 // highlight target (or clear all if target == null)
@@ -213,9 +214,11 @@ function onMouseDown(event) {
   //console.log([event.which, event.target]);
   if (enabled && event.which == 3 && settings.contextMenu) {    // right click
     var target = event.target;
-    var targets = findTargetsAt(clientPos.x, clientPos.y);
-    if (targets) {
-      target = targets[0];
+    if (settings.prioritizeMedia) {
+        var targets = findTargetsAt(clientPos.x, clientPos.y);
+        if (targets) {
+          target = targets[0];
+        }
     }
     sendTarget(target);
     if (settings.blink) highlight(target);
@@ -239,9 +242,11 @@ function onMouseMove(event) {
   //console.log(["m", highlighted.length]);
   if (enabled && event.which == 3 && settings.blink && settings.contextMenu) {    // highlight target while holding right-click
     var target = event.target;
-    var targets = findTargetsAt(clientPos.x, clientPos.y);
-    if (targets) {
-      target = targets[0];
+    if (settings.prioritizeMedia) {
+        var targets = findTargetsAt(clientPos.x, clientPos.y);
+        if (targets) {
+          target = targets[0];
+        }
     }
     sendTarget(target);
     if (settings.blink) highlight(target);
