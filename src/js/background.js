@@ -192,17 +192,19 @@ function init() {
             targetFlipState = JSON.parse(request.flipState);
             targetUID = request.uid;
             console.log(["Received target:", request.tag, targetFlipState]);
-            chrome.contextMenus.create({title:"<"+request.tag+"> element...", contexts:["page"], enabled:false});
-            chrome.contextMenus.create({type:"separator", contexts:["page"]});
-            contextMenuItems.push(chrome.contextMenus.create({title:"Flip Horizontally", contexts:["page"], type:"checkbox", checked:targetFlipState.flipX, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Flip Vertically", contexts:["page"], type:"checkbox", checked:targetFlipState.flipY, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate 0\u00b0", contexts:["page"], type:"radio", checked:targetFlipState.rotate == 0, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate +90\u00b0", contexts:["page"], type:"radio", checked:targetFlipState.rotate == 90, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate 180\u00b0", contexts:["page"], type:"radio", checked:targetFlipState.rotate == 180, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate -90\u00b0", contexts:["page"], type:"radio", checked:targetFlipState.rotate == 270, onclick:contextMenuOnClick}));
-            contextMenuItems.push(chrome.contextMenus.create({title:"Reset", contexts:["page"], onclick:contextMenuOnClick}));
-            chrome.contextMenus.create({type:"separator", contexts:["page"]});
-            
+            const allButActionsContexts = ["page", "frame", "selection", "link", "editable", "image", "video", "audio"];
+
+            chrome.contextMenus.create({title:"<"+request.tag+"> element...", contexts:allButActionsContexts, enabled:false});
+            chrome.contextMenus.create({type:"separator", contexts:allButActionsContexts});
+            contextMenuItems.push(chrome.contextMenus.create({title:"Flip Horizontally", contexts:allButActionsContexts, type:"checkbox", checked:targetFlipState.flipX, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Flip Vertically", contexts:allButActionsContexts, type:"checkbox", checked:targetFlipState.flipY, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate 0\u00b0", contexts:allButActionsContexts, type:"radio", checked:targetFlipState.rotate == 0, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate +90\u00b0", contexts:allButActionsContexts, type:"radio", checked:targetFlipState.rotate == 90, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate 180\u00b0", contexts:allButActionsContexts, type:"radio", checked:targetFlipState.rotate == 180, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Rotate -90\u00b0", contexts:allButActionsContexts, type:"radio", checked:targetFlipState.rotate == 270, onclick:contextMenuOnClick}));
+            contextMenuItems.push(chrome.contextMenus.create({title:"Reset", contexts:allButActionsContexts, onclick:contextMenuOnClick}));
+            chrome.contextMenus.create({type:"separator", contexts:allButActionsContexts});
+
             // browser action element submenu
             elementMenuId = chrome.contextMenus.create({title:"<"+request.tag+"> element...", contexts:["browser_action"]}, function() {
                 //chrome.contextMenus.create({type:"separator", contexts:["browser_action"], parentId:elementMenuId});
