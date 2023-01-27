@@ -8,8 +8,9 @@ var firstRun = true;
 var currTarget;
 var enabled = true;
 
-// array of highlighted elements
+// array of highlighted/forced inline-block elements
 var highlighted = [];
+var forcedInlineBlock = [];
 
 // x, y of mouse pointer
 var clientPos = {};
@@ -42,6 +43,15 @@ function flip(flipState, wholePage, targetUID) {
 function setFlipState(selector, state) {
   var $selector = $(selector || "body");
   var newState = state || defaultFlipState;
+  var target = $selector.get(0);
+  console.log(["sel", target]);
+  var computedDisplay = getComputedStyle(target, null).getPropertyValue("display");
+  if (computedDisplay === "inline") {
+    if (settings.forceInlineBlock) {
+      console.log("  ...changing to inline-block");
+      forceInlineBlock(target);
+    }
+  }
   // get wrapping DIV of specified elements (was needed in the past to make them transform properly)
   //if (selector && (selector.tagName == "SPAN" || selector.tagName == "A")) $selector = $selector.parent();
   $selector.toggleClass("flipthis-animate", settings.animate);
@@ -175,6 +185,7 @@ function sendTarget(target) {
   var validTarget = (target.tagName != "BODY" && target.tagName != "HTML" && target.tagName != "HEAD");
 
   //console.log(findTargetsAt(clientPos.x, clientPos.y));
+  console.log(["sendingTargetDisplay", target, getComputedStyle(target, null).getPropertyValue("display")]);
 
   console.log([target, currTarget, target == currTarget]);
   //if (target != currTarget) {
@@ -201,6 +212,19 @@ function highlight(target) {
   if (target) {
     $target.toggleClass("flipthis-highlight", event.which == 3);
     highlighted.push($target);
+  }
+}
+
+// force inline-block on target (or clear all if target == null)
+function forceInlineBlock(target) {
+  var $target = $(target);
+  for (var i = forcedInlineBlock.length-1; i>=0; i--) {
+    forcedInlineBlock[i].removeClass("flipthis-inline-block");
+    forcedInlineBlock.splice(i);
+  }
+  if (target) {
+    $target.toggleClass("flipthis-inline-block");
+    forcedInlineBlock.push($target);
   }
 }
 

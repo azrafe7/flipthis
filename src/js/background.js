@@ -131,6 +131,7 @@ function init() {
   defaults.contextMenu = true;
   defaults.blink = false;
   defaults.prioritizeMedia = false;
+  defaults.forceInlineBlock = false;
   defaults.urlPattern = "";
 
   // save default settings to local storage

@@ -27,6 +27,7 @@ SettingsHelper.prototype = {
     settings.contextMenu = $("#contextMenu").prop("checked");
     settings.blink = $("#blink").prop("checked");
     settings.prioritizeMedia = $("#prioritizeMedia").prop("checked");
+    settings.forceInlineBlock = $("#forceInlineBlock").prop("checked");
     settings.urlPattern = $("#urlPattern").val();
   },
 
@@ -39,6 +40,7 @@ SettingsHelper.prototype = {
     $("#contextMenu").prop("checked", settings.contextMenu);
     $("#blink").prop("checked", settings.blink);
     $("#prioritizeMedia").prop("checked", settings.prioritizeMedia);
+    $("#forceInlineBlock").prop("checked", settings.forceInlineBlock);
     $("#urlPattern").val(settings.urlPattern);
   },
 
