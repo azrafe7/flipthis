@@ -44,7 +44,7 @@ function setFlipState(selector, state) {
   var $selector = $(selector || "body");
   var newState = state || defaultFlipState;
   var target = $selector.get(0);
-  console.log(["sel", target]);
+  console.log(["setFlipState", target, newState]);
   var computedDisplay = getComputedStyle(target, null).getPropertyValue("display");
   if (computedDisplay === "inline") {
     if (settings.forceInlineBlock) {
@@ -62,6 +62,10 @@ function setFlipState(selector, state) {
     (newState.rotate != 0 ? "rotate(" + (newState.rotate != 270 ? newState.rotate : -90) + "deg) " : ""));
   //console.log([$selector[0], newState.rotate, "rotate(" + (newState.rotate != 270 ? newState.rotate : -90) + "deg) "]);
   $selector.removeClass("flipthis-invisible");
+  //var reset = JSON.stringify(newState) === JSON.stringify(defaultFlipState);
+  //if (reset) {
+  //  $selector.removeClass(["flipthis-animate", "flipthis-inline-block"]);
+  //}
 }
 
 function getFlipState(selector) {
