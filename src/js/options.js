@@ -46,7 +46,7 @@ SettingsHelper.prototype = {
     localStorage.settings = JSON.stringify(settings);
   },
 
-  setDefaults: function() {
+  resetToDefaults: function() {
     settings = JSON.parse(localStorage.defaults);
   }
 }
@@ -73,6 +73,11 @@ function main() {
   settingsHelper.saveToPage();
 
   $("input,select").bind("change", function() { sendSettings(); });
+  $("#resetBtn").bind("click", function() {
+    settingsHelper.resetToDefaults();
+    settingsHelper.saveToPage();
+    sendSettings();
+  });
 }
 
 
