@@ -19,28 +19,24 @@ SettingsHelper.prototype = {
   },
 
   getFromPage: function() {
-    settings.autoFlip = $("#autoFlip").prop("checked");
-    settings.flipX = $("#flipX").prop("checked");
-    settings.flipY = $("#flipY").prop("checked");
+    settings.autoFlip = $("#autoFlip").attr("checked");
+    settings.flipX = $("#flipX").attr("checked");
+    settings.flipY = $("#flipY").attr("checked");
     settings.rotate = $("#rotate").val();
-    settings.animate = $("#animate").prop("checked");
-    settings.contextMenu = $("#contextMenu").prop("checked");
-    settings.blink = $("#blink").prop("checked");
-    settings.prioritizeMedia = $("#prioritizeMedia").prop("checked");
-    settings.forceInlineBlock = $("#forceInlineBlock").prop("checked");
+    settings.animate = $("#animate").attr("checked");
+    settings.contextMenu = $("#contextMenu").attr("checked");
+    settings.blink = $("#blink").attr("checked");
     settings.urlPattern = $("#urlPattern").val();
   },
 
   saveToPage: function() {
-    $("#autoFlip").prop("checked", settings.autoFlip);
-    $("#flipX").prop("checked", settings.flipX);
-    $("#flipY").prop("checked", settings.flipY);
+    $("#autoFlip").attr("checked", settings.autoFlip);
+    $("#flipX").attr("checked", settings.flipX);
+    $("#flipY").attr("checked", settings.flipY);
     $("#rotate").val(settings.rotate);
-    $("#animate").prop("checked", settings.animate);
-    $("#contextMenu").prop("checked", settings.contextMenu);
-    $("#blink").prop("checked", settings.blink);
-    $("#prioritizeMedia").prop("checked", settings.prioritizeMedia);
-    $("#forceInlineBlock").prop("checked", settings.forceInlineBlock);
+    $("#animate").attr("checked", settings.animate);
+    $("#contextMenu").attr("checked", settings.contextMenu);
+    $("#blink").attr("checked", settings.blink);
     $("#urlPattern").val(settings.urlPattern);
   },
 
@@ -48,7 +44,7 @@ SettingsHelper.prototype = {
     localStorage.settings = JSON.stringify(settings);
   },
 
-  resetToDefaults: function() {
+  setDefaults: function() {
     settings = JSON.parse(localStorage.defaults);
   }
 }
@@ -75,11 +71,6 @@ function main() {
   settingsHelper.saveToPage();
 
   $("input,select").bind("change", function() { sendSettings(); });
-  $("#resetBtn").bind("click", function() {
-    settingsHelper.resetToDefaults();
-    settingsHelper.saveToPage();
-    sendSettings();
-  });
 }
 
 
