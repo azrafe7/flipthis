@@ -1,3 +1,5 @@
+'use strict';
+
 var uid = getUniqueId();  // every content script gets a unique id (to work with pages with multiple iframes)
 
 var settings = {};
@@ -6,8 +8,12 @@ var firstRun = true;
 var currTarget;
 var enabled = true;
 
-// array of highlighted elements
+// array of highlighted/forced inline-block elements
 var highlighted = [];
+var forcedInlineBlock = [];
+
+// x, y of mouse pointer
+var clientPos = {};
 
 function getUniqueId() {
   function id4() {
@@ -37,6 +43,15 @@ function flip(flipState, wholePage, targetUID) {
 function setFlipState(selector, state) {
   var $selector = $(selector || "body");
   var newState = state || defaultFlipState;
+  var target = $selector.get(0);
+  console.log(["setFlipState", target, newState]);
+  var computedDisplay = getComputedStyle(target, null).getPropertyValue("display");
+  if (computedDisplay === "inline") {
+    if (settings.forceInlineBlock) {
+      console.log("  ...changing to inline-block");
+      forceInlineBlock(target);
+    }
+  }
   // get wrapping DIV of specified elements (was needed in the past to make them transform properly)
   //if (selector && (selector.tagName == "SPAN" || selector.tagName == "A")) $selector = $selector.parent();
   $selector.toggleClass("flipthis-animate", settings.animate);
@@ -47,6 +62,10 @@ function setFlipState(selector, state) {
     (newState.rotate != 0 ? "rotate(" + (newState.rotate != 270 ? newState.rotate : -90) + "deg) " : ""));
   //console.log([$selector[0], newState.rotate, "rotate(" + (newState.rotate != 270 ? newState.rotate : -90) + "deg) "]);
   $selector.removeClass("flipthis-invisible");
+  //var reset = JSON.stringify(newState) === JSON.stringify(defaultFlipState);
+  //if (reset) {
+  //  $selector.removeClass(["flipthis-animate", "flipthis-inline-block"]);
+  //}
 }
 
 function getFlipState(selector) {
@@ -142,13 +161,40 @@ function flashAnimate(target) {
   setTimeout(function() { tgt.removeClass("flipthis-highlight"); }, 100);
 }*/
 
+
+function findTargetsAt(x, y) {
+  var elementsAtPoint = document.elementsFromPoint(x, y);
+  var videos = [];
+  var images = [];
+  var others = [];
+  for (const el of elementsAtPoint) {
+    const tag = el.tagName.toUpperCase();
+    if (tag === 'VIDEO') {
+      videos.push(el);
+    } else if (tag === 'IMG' || tag === 'SVG' || tag === 'CANVAS') {
+      images.push(el);
+    } else {
+      others.push(el);
+    }
+  }
+
+  var sortedTargets = [].concat(videos).concat(images).concat(others)
+  //console.log(sortedTargets);
+  return sortedTargets;
+}
+
+
 // send target to background
 function sendTarget(target) {
   var validTarget = (target.tagName != "BODY" && target.tagName != "HTML" && target.tagName != "HEAD");
 
-  if (target != currTarget) {
-    targetFlipState = getFlipState(target);
-    console.log(["Sending target flipState:", targetFlipState, target.tagName]);
+  //console.log(findTargetsAt(clientPos.x, clientPos.y));
+  console.log(["sendingTargetDisplay", target, getComputedStyle(target, null).getPropertyValue("display")]);
+
+  console.log([target, currTarget, target == currTarget]);
+  //if (target != currTarget) {
+    var targetFlipState = getFlipState(target);
+    console.log(["Sending target flipState:", targetFlipState, target.tagName, target]);
     currTarget = target;
     chrome.extension.sendRequest({
       command:"contextMenu",
@@ -157,7 +203,7 @@ function sendTarget(target) {
       flipState: JSON.stringify(targetFlipState),
       uid: uid
     });
-  }
+  //}
 }
 
 // highlight target (or clear all if target == null)
@@ -173,12 +219,37 @@ function highlight(target) {
   }
 }
 
+// force inline-block on target (or clear all if target == null)
+function forceInlineBlock(target) {
+  var $target = $(target);
+  for (var i = forcedInlineBlock.length-1; i>=0; i--) {
+    forcedInlineBlock[i].removeClass("flipthis-inline-block");
+    forcedInlineBlock.splice(i);
+  }
+  if (target) {
+    $target.toggleClass("flipthis-inline-block");
+    forcedInlineBlock.push($target);
+  }
+}
+
 // send curr target and highlight
 function onMouseDown(event) {
+  clientPos = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
   //console.log([event.which, event.target]);
   if (enabled && event.which == 3 && settings.contextMenu) {    // right click
-    sendTarget(event.target);
-    if (settings.blink) highlight(event.target);
+    var target = event.target;
+    if (settings.prioritizeMedia) {
+        var targets = findTargetsAt(clientPos.x, clientPos.y);
+        if (targets) {
+          target = targets[0];
+        }
+    }
+    sendTarget(target);
+    if (settings.blink) highlight(target);
   }
 }
 
@@ -191,10 +262,22 @@ function onMouseUp(event) {
 
 // send curr target and highlight
 function onMouseMove(event) {
+  clientPos = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
   //console.log(["m", highlighted.length]);
   if (enabled && event.which == 3 && settings.blink && settings.contextMenu) {    // highlight target while holding right-click
-    sendTarget(event.target);
-    if (settings.blink) highlight(event.target);
+    var target = event.target;
+    if (settings.prioritizeMedia) {
+        var targets = findTargetsAt(clientPos.x, clientPos.y);
+        if (targets) {
+          target = targets[0];
+        }
+    }
+    sendTarget(target);
+    if (settings.blink) highlight(target);
   }
 }
 

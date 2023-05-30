@@ -58,6 +58,10 @@ input[type=text] {
 	width: 150px;
 }
 
+#resetBtn {
+	margin-top: 10px;
+}
+
 #helpIcon {
 	float: left;
 	font-size: .75em;
