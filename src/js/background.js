@@ -1,7 +1,5 @@
 'use strict';
 
-// coded by azrafe7
-
 // settings
 var defaults = {};
 var settings = {};

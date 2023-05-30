@@ -31,5 +31,5 @@
    "name": "Flip this",
    "options_page": "options.html",
    "permissions": [ "contextMenus" ],
-   "version": "0.3.2"
+   "version": "0.3.3"
 }
